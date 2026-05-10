@@ -5,3 +5,6 @@ pymysql
 jinja2
 python-multipart
 pydantic-settings
+python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
