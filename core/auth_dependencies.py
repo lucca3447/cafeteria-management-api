@@ -39,7 +39,8 @@ def get_current_user(
 
 def require_roles(*roles: str):
     def role_dependency(usuario=Depends(get_current_user)):
-        if usuario.perfil not in roles:
+        perfil_usuario = "funcionario" if usuario.perfil == "atendente" else usuario.perfil
+        if perfil_usuario not in roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Sem permissao para este recurso",

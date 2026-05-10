@@ -13,7 +13,7 @@ class Usuario(Base):
     nome = Column(String(100), nullable=False)
     login = Column(String(50), nullable=False, unique=True, index=True)
     senha_hash = Column(String(255), nullable=False)
-    perfil = Column(String(30), nullable=False, default="atendente")
+    perfil = Column(String(30), nullable=False, default="funcionario")
     ativo = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 

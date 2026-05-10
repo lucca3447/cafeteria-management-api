@@ -8,7 +8,7 @@ class UsuarioCreate(BaseModel):
     nome: str = Field(min_length=2, max_length=100)
     login: str = Field(min_length=3, max_length=50)
     senha: str = Field(min_length=8, max_length=100)
-    perfil: Literal["admin", "gerente", "atendente"] = "atendente"
+    perfil: Literal["admin", "gerente", "funcionario"] = "funcionario"
     ativo: bool = True
 
 
@@ -16,7 +16,7 @@ class UsuarioUpdate(BaseModel):
     nome: str | None = Field(default=None, min_length=2, max_length=100)
     login: str | None = Field(default=None, min_length=3, max_length=50)
     senha: str | None = Field(default=None, min_length=8, max_length=100)
-    perfil: Literal["admin", "gerente", "atendente"] | None = None
+    perfil: Literal["admin", "gerente", "funcionario"] | None = None
     ativo: bool | None = None
 
 
