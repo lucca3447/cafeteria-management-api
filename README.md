@@ -1,6 +1,6 @@
-# Cafeteria management API
+# API Delicias da Cidade
 
-API REST para gerenciamento de cafeteria, construida com FastAPI, SQLAlchemy e MySQL.
+API REST para gerenciamento de cafeteria, construída com FastAPI, SQLAlchemy e MySQL.
 
 Arquitetura em camadas:
 `Router -> Service -> Repository`
@@ -11,15 +11,15 @@ Arquitetura em camadas:
 - SQLAlchemy
 - MySQL (XAMPP)
 - Pydantic
-- python-jose (JWT)
-- passlib + bcrypt (hash de senha)
+- JWT (`python-jose`)
+- Hash de senha (`passlib` + `bcrypt`)
 
 ## Estrutura do Projeto
 ```txt
 deliciasdacidade2/
-|-- core/           # Configuracao, banco e seguranca
+|-- core/           # Configuracao, banco, seguranca e autorizacao
 |-- models/         # Entidades SQLAlchemy
-|-- schemas/        # Validacao e contratos de entrada/saida
+|-- schemas/        # Contratos de entrada/saida (Pydantic)
 |-- repositories/   # Acesso a dados
 |-- services/       # Regras de negocio
 |-- routers/        # Endpoints HTTP
@@ -28,11 +28,11 @@ deliciasdacidade2/
 |-- .env
 ```
 
-## Variaveis de Ambiente
-Crie/ajuste o arquivo `.env` na raiz do projeto:
+## Variáveis de Ambiente
+Crie/ajuste o arquivo `.env` na raiz:
 
 ```env
-DATABASE_URL=url_da_sua_database
+DATABASE_URL=mysql+pymysql://root:@localhost:3306/cafeteriabd
 SECRET_KEY=troque_por_uma_chave_forte
 ```
 
@@ -50,17 +50,17 @@ python -m pip install -r requirements.txt
 python -m uvicorn main:app --reload
 ```
 
-Documentacao interativa:
+Documentação interativa:
 - Swagger: http://127.0.0.1:8000/docs
 
 ## Banco de Dados
-As tabelas sao criadas automaticamente na inicializacao via:
+As tabelas são criadas automaticamente na inicialização:
 
 ```python
 Base.metadata.create_all(bind=engine)
 ```
 
-## Endpoints Principais
+## Endpoints (prefixos)
 - `/auth`
 - `/usuarios`
 - `/categorias`
@@ -72,25 +72,34 @@ Base.metadata.create_all(bind=engine)
 - `/itens-pedido`
 - `/fornecedor-produto`
 
-## Autenticacao e Autorizacao
-A API usa JWT com access token e refresh token.
+## Autenticação e Autorização
+A API usa JWT com `access_token` e `refresh_token`.
 
-Fluxo principal:
-1. `POST /auth/bootstrap-admin` (uso unico, apenas se ainda nao existir admin)
-2. `POST /auth/login`
+Fluxo recomendado:
+1. `POST /auth/bootstrap-admin` (uso único; bloqueia após existir admin)
+2. `POST /auth/login` (JSON com `login` e `senha`)
 3. `GET /auth/me`
 4. `POST /auth/refresh`
 5. `POST /auth/logout`
 
-Regras de perfil (RBAC simplificado):
+Para o botão `Authorize` do Swagger:
+1. Use o endpoint OAuth2 `POST /auth/token`
+2. Preencha `username` e `password` no popup
+
+Perfis (RBAC):
 - `admin`: acesso total
-- `gerente`: leitura geral e escrita operacional
-- `funcionario`: pedidos/itens e leitura de catalogo
+- `gerente`: gestão operacional
+- `funcionario`: pedidos/itens e leitura de catálogo
 
-Observacao: apos existir um admin, o endpoint `bootstrap-admin` retorna `403` por seguranca.
+## Integração com Frontend
+- CORS já configurado para Vite:
+  - `http://localhost:5173`
+  - `http://127.0.0.1:5173`
+- Enviar token no header:
+  - `Authorization: Bearer <access_token>`
 
-## Requisitos de Seguranca
+## Segurança
 - Trocar `SECRET_KEY` por ambiente
-- Senhas sao armazenadas com hash (passlib + bcrypt)
-
+- Senhas são armazenadas com hash (`bcrypt`)
+- Rotas protegidas por token e perfil
 
