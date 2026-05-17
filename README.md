@@ -1,4 +1,4 @@
-# API Delicias da Cidade
+# Cafeteria-management-api
 
 API REST para gerenciamento de cafeteria, construída com FastAPI, SQLAlchemy e MySQL.
 
