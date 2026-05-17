@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from core.auth_dependencies import get_current_user
@@ -27,6 +28,12 @@ def bootstrap_admin(payload: BootstrapAdminRequest, db: Session = Depends(get_db
 def login(payload: LoginRequest, db: Session = Depends(get_db)):
     service = AuthService(db)
     return service.login(payload.login, payload.senha)
+
+
+@router.post("/token", response_model=TokenResponse)
+def token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    service = AuthService(db)
+    return service.login(form_data.username, form_data.password)
 
 
 @router.post("/refresh", response_model=TokenResponse)
