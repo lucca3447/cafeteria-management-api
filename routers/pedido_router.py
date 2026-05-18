@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from core.auth_dependencies import require_roles
 from core.database import get_db
-from schemas.pedido_schema import PedidoCreate, PedidoResponse, PedidoUpdate
+from schemas.pedido_schema import PedidoCreate, PedidoResponse, PedidoUpdate, PedidoStatusUpdate
 from services.pedido_service import PedidoService
 
 
@@ -51,6 +51,17 @@ def atualizar_pedido(
 ):
     service = PedidoService(db)
     return service.atualizar(id_nota_fiscal, pedido)
+
+
+@router.patch("/{id_nota_fiscal}/status", response_model=PedidoResponse)
+def atualizar_status_pedido(
+    id_nota_fiscal: int,
+    pedido_status: PedidoStatusUpdate,
+    db: Session = Depends(get_db),
+    _: object = Depends(require_roles("admin", "gerente", "funcionario"))
+):
+    service = PedidoService(db)
+    return service.atualizar_status(id_nota_fiscal, pedido_status)
 
 
 @router.delete("/{id_nota_fiscal}")

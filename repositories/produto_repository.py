@@ -24,7 +24,8 @@ class ProdutoRepository:
         novo_produto = Produto(
             nome=produto.nome,
             preco=produto.preco,
-            id_categoria=produto.id_categoria
+            id_categoria=produto.id_categoria,
+            exige_preparo=produto.exige_preparo
         )
 
         self.db.add(novo_produto)
@@ -37,6 +38,7 @@ class ProdutoRepository:
         produto_existente.nome = produto.nome
         produto_existente.preco = produto.preco
         produto_existente.id_categoria = produto.id_categoria
+        produto_existente.exige_preparo = produto.exige_preparo
 
         self.db.commit()
         self.db.refresh(produto_existente)

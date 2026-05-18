@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from models.pedido_model import Pedido
-from schemas.pedido_schema import PedidoCreate, PedidoUpdate
+from schemas.pedido_schema import PedidoCreate, PedidoUpdate, PedidoStatusUpdate
 
 
 class PedidoRepository:
@@ -24,7 +24,8 @@ class PedidoRepository:
     def criar(self, pedido: PedidoCreate):
         novo_pedido = Pedido(
             id_funcionario=pedido.id_funcionario,
-            valor_total=pedido.valor_total
+            valor_total=pedido.valor_total,
+            status=pedido.status
         )
 
         self.db.add(novo_pedido)
@@ -36,6 +37,15 @@ class PedidoRepository:
     def atualizar(self, pedido_existente: Pedido, pedido: PedidoUpdate):
         pedido_existente.id_funcionario = pedido.id_funcionario
         pedido_existente.valor_total = pedido.valor_total
+        pedido_existente.status = pedido.status
+
+        self.db.commit()
+        self.db.refresh(pedido_existente)
+
+        return pedido_existente
+
+    def atualizar_status(self, pedido_existente: Pedido, pedido_status: PedidoStatusUpdate):
+        pedido_existente.status = pedido_status.status
 
         self.db.commit()
         self.db.refresh(pedido_existente)

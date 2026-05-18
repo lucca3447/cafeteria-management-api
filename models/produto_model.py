@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Numeric
+from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Boolean
 from sqlalchemy.orm import relationship
 from core.database import Base
 
@@ -10,6 +10,7 @@ class Produto(Base):
     nome = Column(String(100), nullable=False, unique=True)
     preco = Column(Numeric(10,2), nullable=False) #Diferente de como foi feito no modelo logico, numeric(decimal no sql) é mais adequado do que float para valores monetários 
     id_categoria = Column(Integer, ForeignKey("categorias.id_categoria"))
+    exige_preparo = Column(Boolean, default=False, nullable=False)
     categoria = relationship("Categoria", back_populates="produtos")
     itens_pedido = relationship("ItemPedido", back_populates="produto")
     estoque = relationship("Estoque", back_populates="produto", uselist=False)
