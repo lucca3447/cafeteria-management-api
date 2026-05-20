@@ -1,5 +1,5 @@
-CREATE DATABASE deliciasdacidade2;
-USE deliciasdacidade2;
+CREATE DATABASE cafeteria1;
+USE cafeteria1;
 
 CREATE TABLE categorias (
     id_categoria INT PRIMARY KEY AUTO_INCREMENT,
@@ -11,6 +11,7 @@ CREATE TABLE produtos (
     nome VARCHAR(100) NOT NULL UNIQUE,
     preco DECIMAL(10,2) NOT NULL,
     id_categoria INT,
+    exige_preparo BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
 );
 
@@ -34,6 +35,7 @@ CREATE TABLE pedidos (
     id_funcionario INT NOT NULL,
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
     valor_total DECIMAL(10,2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pendente',
     FOREIGN KEY (id_funcionario) REFERENCES funcionarios(id_funcionario)
 );
 
