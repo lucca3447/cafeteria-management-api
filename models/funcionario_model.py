@@ -9,7 +9,6 @@ class Funcionario(Base):
     id_funcionario = Column(Integer, primary_key=True, index=True)
     nome = Column(String(100),nullable=False, unique=True)
     cargo = Column(String(50),nullable=False )
-    login = Column(String(50), nullable=False)
-    senha = Column(String(100), nullable=False)
+    
 
     pedidos = relationship("Pedido", back_populates="funcionario")

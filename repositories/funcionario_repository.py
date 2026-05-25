@@ -21,17 +21,10 @@ class FuncionarioRepository:
             Funcionario.nome == nome
         ).first()
 
-    def buscar_por_login(self, login: str):
-        return self.db.query(Funcionario).filter(
-            Funcionario.login == login
-        ).first()
-
     def criar(self, funcionario: FuncionarioCreate):
         novo_funcionario = Funcionario(
             nome=funcionario.nome,
-            cargo=funcionario.cargo,
-            login=funcionario.login,
-            senha=funcionario.senha
+            cargo=funcionario.cargo
         )
 
         self.db.add(novo_funcionario)
@@ -43,8 +36,6 @@ class FuncionarioRepository:
     def atualizar(self, funcionario_existente: Funcionario, funcionario: FuncionarioUpdate):
         funcionario_existente.nome = funcionario.nome
         funcionario_existente.cargo = funcionario.cargo
-        funcionario_existente.login = funcionario.login
-        funcionario_existente.senha = funcionario.senha
 
         self.db.commit()
         self.db.refresh(funcionario_existente)

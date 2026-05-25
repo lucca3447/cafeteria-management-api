@@ -23,11 +23,11 @@ class FuncionarioService:
         return funcionario
 
     def criar(self, funcionario: FuncionarioCreate):
-        funcionario_existente = self.repository.buscar_por_login(funcionario.login)
+        funcionario_existente = self.repository.buscar_por_nome(funcionario.nome)
         if funcionario_existente:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ja existe um funcionario com este login"
+                detail="Ja existe um funcionario com este nome"
             )
 
         return self.repository.criar(funcionario)
@@ -40,14 +40,14 @@ class FuncionarioService:
                 detail="Funcionario nao encontrado"
             )
 
-        funcionario_com_mesmo_login = self.repository.buscar_por_login(funcionario.login)
+        funcionario_com_mesmo_nome = self.repository.buscar_por_nome(funcionario.nome)
         if (
-            funcionario_com_mesmo_login
-            and funcionario_com_mesmo_login.id_funcionario != id_funcionario
+            funcionario_com_mesmo_nome
+            and funcionario_com_mesmo_nome.id_funcionario != id_funcionario
         ):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ja existe outro funcionario com este login"
+                detail="Ja existe outro funcionario com este nome"
             )
 
         return self.repository.atualizar(funcionario_existente, funcionario)

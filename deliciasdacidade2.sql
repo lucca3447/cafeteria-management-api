@@ -25,9 +25,7 @@ CREATE TABLE estoque (
 CREATE TABLE funcionarios (
     id_funcionario INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL UNIQUE,
-    cargo VARCHAR(50) NOT NULL,
-    login VARCHAR(50) NOT NULL,
-    senha VARCHAR(100) NOT NULL
+    cargo VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE pedidos (
