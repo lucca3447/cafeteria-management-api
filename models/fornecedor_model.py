@@ -10,4 +10,4 @@ class Fornecedor(Base):
     telefone = Column(String(20), nullable=False)
     cnpj = Column(String(18), nullable=False, unique=True)
 
-    fornecedor_produtos = relationship("FornecedorProduto", back_populates="fornecedor")
+    fornecedor_produtos = relationship("FornecedorProduto", back_populates="fornecedor", cascade="all, delete-orphan")
