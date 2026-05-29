@@ -13,4 +13,4 @@ class Pedido(Base):
     status = Column(String(20), default="pendente", nullable=False)
 
     funcionario = relationship("Funcionario", back_populates="pedidos")
-    itens = relationship("ItemPedido", back_populates="pedido")
+    itens = relationship("ItemPedido", back_populates="pedido", cascade="all, delete-orphan")

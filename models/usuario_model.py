@@ -17,4 +17,4 @@ class Usuario(Base):
     ativo = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
-    refresh_tokens = relationship("RefreshToken", back_populates="usuario")
+    refresh_tokens = relationship("RefreshToken", back_populates="usuario", cascade="all, delete-orphan")
