@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  /* Brand Palette */
+  --color-brand-50: #FFF8F0; /* Creme */
+  --color-brand-100: #f5e6d3;
+  --color-brand-200: #eacbaf;
+  --color-brand-300: #deb08c;
+  --color-brand-400: #C68B59; /* Caramelo */
+  --color-brand-500: #4B2E2B; /* Marrom café */
+  --color-brand-600: #3c2522;
+  --color-brand-700: #2d1c1a;
+  --color-brand-800: #1e1211;
+  --color-brand-900: #1F1F1F; /* Preto suave */
+  --color-brand-950: #0f0f0f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-brand-50);
+  color: var(--color-brand-900);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Base Form Inputs */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+  @apply w-full rounded-xl border border-slate-200 bg-white px-10 py-2.5 text-sm outline-none transition-all focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10;
+}
+
+button {
+  @apply transition-all active:scale-[0.98];
+}
