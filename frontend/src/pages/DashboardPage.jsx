@@ -61,7 +61,10 @@ export function DashboardPage() {
     fetchPedidos()
     fetchAlertasIA()
     // Atualiza automaticamente a cada 30 segundos
-    const interval = setInterval(fetchPedidos, 30000)
+    const interval = setInterval(() => {
+      fetchPedidos()
+      fetchAlertasIA()
+    }, 30000)
     return () => clearInterval(interval)
   }, [])
 
