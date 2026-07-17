@@ -154,16 +154,14 @@ export function PedidosPage() {
 
       const idNotaFiscal = pedidoCriado.id_nota_fiscal
 
-      await Promise.all(
-        itensRascunho.map((item) =>
-          api.post('/itens-pedido/', {
-            quantidade: Number(item.quantidade),
-            subtotal: Number(item.subtotal),
-            id_produto: Number(item.id_produto),
-            id_nota_fiscal: Number(idNotaFiscal),
-          }),
-        ),
-      )
+      for (const item of itensRascunho) {
+        await api.post('/itens-pedido/', {
+          quantidade: Number(item.quantidade),
+          subtotal: Number(item.subtotal),
+          id_produto: Number(item.id_produto),
+          id_nota_fiscal: Number(idNotaFiscal),
+        })
+      }
 
       // Se nenhum item exige preparo, já marcamos o pedido como pronto/concluído
       const precisaPreparo = itensRascunho.some(item => {

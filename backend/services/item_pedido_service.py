@@ -86,6 +86,7 @@ class ItemPedidoService:
             )
             self.db.add(novo_item)
 
+            self.db.flush()
             self._recalcular_total_pedido(item_pedido.id_nota_fiscal)
             self.db.commit()
             self.db.refresh(novo_item)
@@ -142,6 +143,7 @@ class ItemPedidoService:
             item_existente.id_produto = item_pedido.id_produto
             item_existente.id_nota_fiscal = item_pedido.id_nota_fiscal
 
+            self.db.flush()
             self._recalcular_total_pedido(id_pedido_antigo)
             if id_pedido_antigo != item_pedido.id_nota_fiscal:
                 self._recalcular_total_pedido(item_pedido.id_nota_fiscal)
@@ -169,6 +171,7 @@ class ItemPedidoService:
             id_pedido = item.id_nota_fiscal
 
             self.db.delete(item)
+            self.db.flush()
             self._recalcular_total_pedido(id_pedido)
 
             self.db.commit()
