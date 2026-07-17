@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
 import { api } from '../services/api'
-import { DollarSign, Package, TrendingUp, Activity, Loader2 } from 'lucide-react'
+import { DollarSign, Package, TrendingUp, Activity, Loader2, AlertTriangle, BrainCircuit } from 'lucide-react'
 import {
   BarChart,
   Bar,
@@ -29,6 +29,8 @@ export function DashboardPage() {
   const { user } = useAuth()
   const [pedidos, setPedidos] = useState([])
   const [loading, setLoading] = useState(true)
+  const [alertasIA, setAlertasIA] = useState(null)
+  const [loadingIA, setLoadingIA] = useState(true)
   const [lastUpdate, setLastUpdate] = useState(null)
 
   async function fetchPedidos() {
@@ -43,8 +45,21 @@ export function DashboardPage() {
     }
   }
 
+  async function fetchAlertasIA() {
+    setLoadingIA(true)
+    try {
+      const response = await api.get('/previsao-estoque/alertas')
+      setAlertasIA(response.data)
+    } catch (error) {
+      console.error('Erro ao buscar previsao de IA:', error)
+    } finally {
+      setLoadingIA(false)
+    }
+  }
+
   useEffect(() => {
     fetchPedidos()
+    fetchAlertasIA()
     // Atualiza automaticamente a cada 30 segundos
     const interval = setInterval(fetchPedidos, 30000)
     return () => clearInterval(interval)
@@ -136,6 +151,66 @@ export function DashboardPage() {
           </button>
         </div>
       </div>
+
+      {/* Painel de IA - Previsao de Demanda */}
+      {!loadingIA && alertasIA && alertasIA.total_alertas > 0 && (
+        <div className="rounded-2xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+              <BrainCircuit className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                Previsão de Demanda (IA)
+              </h2>
+              <p className="text-xs text-slate-500">
+                Previsão para <span className="font-semibold text-slate-700">{alertasIA.dia_previsto}</span> ({alertasIA.data_prevista}) — baseada no histórico de vendas
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {alertasIA.alertas.map((alerta) => (
+              <div
+                key={alerta.id_produto}
+                className={`flex items-start gap-3 rounded-xl border p-4 transition-all hover:shadow-md ${
+                  alerta.nivel === 'critico'
+                    ? 'border-red-200 bg-red-50'
+                    : 'border-amber-200 bg-white'
+                }`}
+              >
+                <AlertTriangle
+                  className={`h-5 w-5 mt-0.5 flex-shrink-0 ${
+                    alerta.nivel === 'critico' ? 'text-red-500' : 'text-amber-500'
+                  }`}
+                />
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-slate-900 truncate">{alerta.nome_produto}</p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Demanda prevista: <span className="font-bold text-slate-700">{alerta.demanda_prevista} un.</span>
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Estoque atual: <span className={`font-bold ${alerta.nivel === 'critico' ? 'text-red-600' : 'text-amber-600'}`}>{alerta.estoque_atual} un.</span>
+                  </p>
+                  <p className={`text-xs font-semibold mt-1 ${
+                    alerta.nivel === 'critico' ? 'text-red-600' : 'text-amber-600'
+                  }`}>
+                    {alerta.nivel === 'critico' ? '⚠ ESTOQUE ZERADO' : `Faltam ${alerta.deficit} unidades`}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!loadingIA && alertasIA && alertasIA.total_alertas === 0 && (
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm flex items-center gap-3">
+          <BrainCircuit className="h-5 w-5 text-emerald-600" />
+          <p className="text-sm text-emerald-700">
+            <span className="font-semibold">IA:</span> Todos os produtos possuem estoque suficiente para a demanda prevista de <span className="font-semibold">{alertasIA.dia_previsto}</span>. ✅
+          </p>
+        </div>
+      )}
 
       {/* Stat Cards */}
       <div className="grid gap-6 md:grid-cols-3">
