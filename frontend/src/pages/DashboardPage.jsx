@@ -146,7 +146,7 @@ export function DashboardPage() {
             </span>
           )}
           <button
-            onClick={fetchPedidos}
+            onClick={() => { fetchPedidos(); fetchAlertasIA() }}
             className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
           >
             <Activity className="h-3.5 w-3.5" />

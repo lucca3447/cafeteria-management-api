@@ -104,6 +104,9 @@ class PrevisaoService:
         ETAPA 3 - INFERENCIA:
         Junta tudo: pega a previsao para AMANHA, compara com
         o estoque atual e gera os alertas.
+
+        Alem da previsao por dia da semana, tambem alerta sobre
+        produtos com estoque zerado que ja tiveram vendas recentes.
         """
         # 1. Coleta os dados historicos
         historico = self._buscar_historico_vendas(dias=dias_historico)
@@ -111,44 +114,58 @@ class PrevisaoService:
         # 2. Processa e calcula as medias
         previsao_df = self._calcular_media_por_dia_semana(historico)
 
-        if previsao_df.empty:
-            return {
-                "dia_previsto": DIAS_SEMANA[
-                    (datetime.now() + timedelta(days=1)).weekday()
-                ],
-                "alertas": [],
-                "mensagem": "Sem historico de vendas suficiente para gerar previsoes.",
-            }
-
         # 3. Descobre qual dia da semana sera AMANHA
         amanha = datetime.now() + timedelta(days=1)
         dia_semana_amanha = amanha.weekday()
 
-        # 4. Filtra a previsao apenas para o dia de amanha
-        previsao_amanha = previsao_df[
-            previsao_df["dia_semana"] == dia_semana_amanha
-        ]
-
-        # 5. Busca o estoque atual e os nomes dos produtos
+        # 4. Busca o estoque atual e os nomes dos produtos
         estoque_atual = self._buscar_estoque_atual()
         nomes_produtos = self._buscar_nomes_produtos()
 
-        # 6. Compara previsao vs estoque e gera alertas
+        # 5. Compara previsao vs estoque e gera alertas
         alertas = []
-        for _, linha in previsao_amanha.iterrows():
-            id_produto = int(linha["id_produto"])
-            demanda_prevista = int(linha["media_quantidade"])
-            estoque = estoque_atual.get(id_produto, 0)
+        produtos_ja_alertados = set()
 
-            if estoque < demanda_prevista:
-                alertas.append({
-                    "id_produto": id_produto,
-                    "nome_produto": nomes_produtos.get(id_produto, f"Produto {id_produto}"),
-                    "demanda_prevista": demanda_prevista,
-                    "estoque_atual": estoque,
-                    "deficit": demanda_prevista - estoque,
-                    "nivel": "critico" if estoque == 0 else "alerta",
-                })
+        # 5a. Alertas baseados na previsao para amanha
+        if not previsao_df.empty:
+            previsao_amanha = previsao_df[
+                previsao_df["dia_semana"] == dia_semana_amanha
+            ]
+
+            for _, linha in previsao_amanha.iterrows():
+                id_produto = int(linha["id_produto"])
+                demanda_prevista = int(linha["media_quantidade"])
+                estoque = estoque_atual.get(id_produto, 0)
+
+                if estoque < demanda_prevista:
+                    alertas.append({
+                        "id_produto": id_produto,
+                        "nome_produto": nomes_produtos.get(id_produto, f"Produto {id_produto}"),
+                        "demanda_prevista": demanda_prevista,
+                        "estoque_atual": estoque,
+                        "deficit": demanda_prevista - estoque,
+                        "nivel": "critico" if estoque == 0 else "alerta",
+                    })
+                    produtos_ja_alertados.add(id_produto)
+
+        # 5b. Alertas para produtos com estoque ZERADO que tiveram
+        #     vendas no historico mas nao cairam na previsao de amanha
+        produtos_com_vendas = set()
+        if not previsao_df.empty:
+            produtos_com_vendas = set(previsao_df["id_produto"].unique())
+
+        for id_produto, qtd_estoque in estoque_atual.items():
+            if qtd_estoque == 0 and id_produto not in produtos_ja_alertados:
+                # Produto zerado: alertar se ja teve venda recente
+                if id_produto in produtos_com_vendas:
+                    alertas.append({
+                        "id_produto": id_produto,
+                        "nome_produto": nomes_produtos.get(id_produto, f"Produto {id_produto}"),
+                        "demanda_prevista": 0,
+                        "estoque_atual": 0,
+                        "deficit": 0,
+                        "nivel": "critico",
+                    })
 
         # Ordena: criticos primeiro
         alertas.sort(key=lambda a: (0 if a["nivel"] == "critico" else 1, -a["deficit"]))
