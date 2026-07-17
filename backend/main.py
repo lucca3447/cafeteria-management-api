@@ -26,6 +26,7 @@ from routers.item_pedido_router import router as item_pedido_router
 from routers.pedido_router import router as pedido_router
 from routers.produto_router import router as produto_router
 from routers.usuario_router import router as usuario_router
+from routers.previsao_router import router as previsao_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -55,6 +56,7 @@ app.include_router(estoque_router)
 app.include_router(pedido_router)
 app.include_router(item_pedido_router)
 app.include_router(fornecedor_produto_router)
+app.include_router(previsao_router)
 
 
 @app.get("/")
