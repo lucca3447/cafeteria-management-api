@@ -11,6 +11,7 @@ class Produto(Base):
     preco = Column(Numeric(10,2), nullable=False) #Diferente de como foi feito no modelo logico, numeric(decimal no sql) é mais adequado do que float para valores monetários 
     id_categoria = Column(Integer, ForeignKey("categorias.id_categoria"))
     exige_preparo = Column(Boolean, default=False, nullable=False)
+    id_cantina = Column(Integer, ForeignKey("cantinas.id_cantina"), nullable=False)
     categoria = relationship("Categoria", back_populates="produtos")
     itens_pedido = relationship("ItemPedido", back_populates="produto", cascade="all, delete-orphan")
     estoque = relationship("Estoque", back_populates="produto", uselist=False, cascade="all, delete-orphan")

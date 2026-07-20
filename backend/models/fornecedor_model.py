@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from core.database import Base
 
@@ -9,5 +9,6 @@ class Fornecedor(Base):
     nome = Column(String(100), nullable=False, unique=True)
     telefone = Column(String(20), nullable=False)
     cnpj = Column(String(18), nullable=False, unique=True)
+    id_cantina = Column(Integer, ForeignKey("cantinas.id_cantina"), nullable=False)
 
     fornecedor_produtos = relationship("FornecedorProduto", back_populates="fornecedor", cascade="all, delete-orphan")
