@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
 from core.database import Base, engine
 
+from models.cantina_model import Cantina
 from models.categoria_model import Categoria
 from models.estoque_model import Estoque
 from models.fornecedor_model import Fornecedor
