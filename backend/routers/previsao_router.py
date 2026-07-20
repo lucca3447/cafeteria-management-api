@@ -1,3 +1,5 @@
+from core.auth_dependencies import get_current_user
+from models.usuario_model import Usuario
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -14,7 +16,7 @@ router = APIRouter(
 @router.get("/alertas")
 def obter_alertas_previsao(
     dias: int = 28,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
 ):
     """
 
@@ -25,5 +27,5 @@ def obter_alertas_previsao(
     - dias: quantidade de dias de historico a considerar (padrao: 28)
 
     """
-    service = PrevisaoService(db)
+    service = PrevisaoService(db, current_user.id_cantina)
     return service.gerar_alertas(dias_historico=dias)

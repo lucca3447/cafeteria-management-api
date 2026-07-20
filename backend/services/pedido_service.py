@@ -7,9 +7,9 @@ from schemas.pedido_schema import PedidoCreate, PedidoUpdate, PedidoStatusUpdate
 
 
 class PedidoService:
-    def __init__(self, db: Session):
-        self.repository = PedidoRepository(db)
-        self.funcionario_repository = FuncionarioRepository(db)
+    def __init__(self, db: Session, id_cantina: int):
+        self.repository = PedidoRepository(db, id_cantina)
+        self.funcionario_repository = FuncionarioRepository(db, id_cantina)
 
     def listar(self):
         return self.repository.listar()

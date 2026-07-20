@@ -4,25 +4,29 @@ from schemas.categoria_schema import CategoriaCreate, CategoriaUpdate
 
 
 class CategoriaRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(Categoria).all()
+        return self.db.query(Categoria).filter(Categoria.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_categoria: int):
         return self.db.query(Categoria).filter(
-            Categoria.id_categoria == id_categoria
+            Categoria.id_categoria == id_categoria,
+            Categoria.id_cantina == self.id_cantina
         ).first()
 
     def buscar_por_descricao(self, descricao: str):
         return self.db.query(Categoria).filter(
-            Categoria.descricao == descricao
+            Categoria.descricao == descricao,
+            Categoria.id_cantina == self.id_cantina
         ).first()
 
     def criar(self, categoria: CategoriaCreate):
         nova_categoria = Categoria(
-            descricao=categoria.descricao
+            descricao=categoria.descricao,
+            id_cantina=self.id_cantina
         )
 
         self.db.add(nova_categoria)

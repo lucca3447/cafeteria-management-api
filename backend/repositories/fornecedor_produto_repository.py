@@ -1,15 +1,17 @@
 from sqlalchemy.orm import Session
 
 from models.fornecedor_produto_model import FornecedorProduto
+from models.fornecedor_model import Fornecedor
 from schemas.fornecedor_produto_schema import FornecedorProdutoCreate
 
 
 class FornecedorProdutoRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(FornecedorProduto).all()
+        return self.db.query(FornecedorProduto).join(FornecedorProduto.fornecedor).filter(Fornecedor.id_cantina == self.id_cantina).all()
 
     def buscar_por_ids(self, id_fornecedor: int, id_produto: int):
         return self.db.query(FornecedorProduto).filter(
@@ -18,13 +20,15 @@ class FornecedorProdutoRepository:
         ).first()
 
     def buscar_por_fornecedor(self, id_fornecedor: int):
-        return self.db.query(FornecedorProduto).filter(
-            FornecedorProduto.id_fornecedor == id_fornecedor
+        return self.db.query(FornecedorProduto).join(FornecedorProduto.fornecedor).filter(
+            FornecedorProduto.id_fornecedor == id_fornecedor,
+            Fornecedor.id_cantina == self.id_cantina
         ).all()
 
     def buscar_por_produto(self, id_produto: int):
-        return self.db.query(FornecedorProduto).filter(
-            FornecedorProduto.id_produto == id_produto
+        return self.db.query(FornecedorProduto).join(FornecedorProduto.fornecedor).filter(
+            FornecedorProduto.id_produto == id_produto,
+            Fornecedor.id_cantina == self.id_cantina
         ).all()
 
     def criar(self, fornecedor_produto: FornecedorProdutoCreate):

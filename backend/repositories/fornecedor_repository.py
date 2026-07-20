@@ -5,15 +5,17 @@ from schemas.fornecedor_schema import FornecedorCreate, FornecedorUpdate
 
 
 class FornecedorRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(Fornecedor).all()
+        return self.db.query(Fornecedor).filter(Fornecedor.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_fornecedor: int):
         return self.db.query(Fornecedor).filter(
-            Fornecedor.id_fornecedor == id_fornecedor
+            Fornecedor.id_fornecedor == id_fornecedor,
+            Fornecedor.id_cantina == self.id_cantina
         ).first()
 
     def buscar_por_nome(self, nome: str):
@@ -23,13 +25,15 @@ class FornecedorRepository:
 
     def buscar_por_cnpj(self, cnpj: str):
         return self.db.query(Fornecedor).filter(
-            Fornecedor.cnpj == cnpj
+            Fornecedor.cnpj == cnpj,
+            Fornecedor.id_cantina == self.id_cantina
         ).first()
 
     def criar(self, fornecedor: FornecedorCreate):
         novo_fornecedor = Fornecedor(
             nome=fornecedor.nome,
             telefone=fornecedor.telefone,
+            id_cantina=self.id_cantina,
             cnpj=fornecedor.cnpj
         )
 

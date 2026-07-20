@@ -8,10 +8,10 @@ from schemas.fornecedor_produto_schema import FornecedorProdutoCreate
 
 
 class FornecedorProdutoService:
-    def __init__(self, db: Session):
-        self.repository = FornecedorProdutoRepository(db)
-        self.fornecedor_repository = FornecedorRepository(db)
-        self.produto_repository = ProdutoRepository(db)
+    def __init__(self, db: Session, id_cantina: int):
+        self.repository = FornecedorProdutoRepository(db, id_cantina)
+        self.fornecedor_repository = FornecedorRepository(db, id_cantina)
+        self.produto_repository = ProdutoRepository(db, id_cantina)
 
     def listar(self):
         return self.repository.listar()

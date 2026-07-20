@@ -7,9 +7,9 @@ from schemas.produto_schema import ProdutoCreate, ProdutoUpdate
 
 
 class ProdutoService:
-    def __init__(self, db: Session):
-        self.repository = ProdutoRepository(db)
-        self.categoria_repository = CategoriaRepository(db)
+    def __init__(self, db: Session, id_cantina: int):
+        self.repository = ProdutoRepository(db, id_cantina)
+        self.categoria_repository = CategoriaRepository(db, id_cantina)
 
     def listar(self):
         return self.repository.listar()

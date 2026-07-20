@@ -6,8 +6,8 @@ from repositories.categoria_repository import CategoriaRepository
 
 
 class CategoriaService:
-    def __init__(self, db: Session):
-        self.repository = CategoriaRepository(db)
+    def __init__(self, db: Session, id_cantina: int):
+        self.repository = CategoriaRepository(db, id_cantina)
 
     def listar(self):
         return self.repository.listar()
