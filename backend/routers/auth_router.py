@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from core.auth_dependencies import get_current_user
 from core.database import get_db
 from schemas.auth_schema import (
-    BootstrapAdminRequest,
     LoginRequest,
     LogoutResponse,
     RefreshTokenRequest,
@@ -17,11 +16,6 @@ from services.auth_service import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-
-@router.post("/bootstrap-admin", response_model=UsuarioResponse, status_code=201)
-def bootstrap_admin(payload: BootstrapAdminRequest, db: Session = Depends(get_db)):
-    service = AuthService(db)
-    return service.bootstrap_admin(payload.nome, payload.login, payload.senha)
 
 
 @router.post("/login", response_model=TokenResponse)

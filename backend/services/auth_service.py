@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from core.security import criar_access_token, decodificar_token, gerar_hash_senha, verificar_senha
 from repositories.refresh_token_repository import RefreshTokenRepository
 from repositories.usuario_repository import UsuarioRepository
-from schemas.usuario_schema import UsuarioCreate
+from repositories.usuario_repository import UsuarioRepository
 
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
@@ -17,29 +17,6 @@ class AuthService:
         self.usuario_repository = UsuarioRepository(db)
         self.refresh_token_repository = RefreshTokenRepository(db)
 
-    def bootstrap_admin(self, nome: str, login: str, senha: str):
-        if self.usuario_repository.existe_admin():
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Bootstrap bloqueado: ja existe um usuario admin",
-            )
-
-        usuario_existente = self.usuario_repository.buscar_por_login(login)
-        if usuario_existente:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ja existe um usuario com este login",
-            )
-
-        usuario = UsuarioCreate(
-            nome=nome,
-            login=login,
-            senha=senha,
-            perfil="admin",
-            ativo=True,
-        )
-        senha_hash = gerar_hash_senha(senha)
-        return self.usuario_repository.criar(usuario, senha_hash)
 
     def login(self, login: str, senha: str):
         usuario = self.usuario_repository.buscar_por_login(login)

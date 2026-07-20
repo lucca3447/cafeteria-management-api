@@ -5,25 +5,27 @@ from schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
 
 
 class UsuarioRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(Usuario).all()
+        return self.db.query(Usuario).filter(Usuario.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_usuario: int):
-        return self.db.query(Usuario).filter(Usuario.id_usuario == id_usuario).first()
+        return self.db.query(Usuario).filter(Usuario.id_usuario == id_usuario, Usuario.id_cantina == self.id_cantina).first()
 
     def buscar_por_login(self, login: str):
-        return self.db.query(Usuario).filter(Usuario.login == login).first()
+        return self.db.query(Usuario).filter(Usuario.login == login, Usuario.id_cantina == self.id_cantina).first()
 
-    def criar(self, usuario: UsuarioCreate, senha_hash: str):
+    def criar(self, usuario: UsuarioCreate, senha_hash: str, id_cantina: int):
         novo_usuario = Usuario(
             nome=usuario.nome,
             login=usuario.login,
             senha_hash=senha_hash,
             perfil=usuario.perfil,
             ativo=usuario.ativo,
+            id_cantina=id_cantina,
         )
         self.db.add(novo_usuario)
         self.db.commit()
@@ -51,4 +53,4 @@ class UsuarioRepository:
         self.db.commit()
 
     def existe_admin(self) -> bool:
-        return self.db.query(Usuario).filter(Usuario.perfil == "admin").first() is not None
+        return self.db.query(Usuario).filter(Usuario.perfil == "admin", Usuario.id_cantina == self.id_cantina).first() is not None
