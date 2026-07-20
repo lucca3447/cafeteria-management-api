@@ -60,6 +60,7 @@ class AuthService:
                 "sub": str(usuario.id_usuario),
                 "perfil": usuario.perfil,
                 "type": "access",
+                "id_cantina": usuario.id_cantina,
             }
         )
 
@@ -69,6 +70,7 @@ class AuthService:
             {
                 "sub": str(usuario.id_usuario),
                 "perfil": usuario.perfil,
+                "id_cantina": usuario.id_cantina,
                 "jti": refresh_jti,
                 "type": "refresh",
             },
@@ -129,6 +131,7 @@ class AuthService:
                 "sub": str(usuario.id_usuario),
                 "perfil": usuario.perfil,
                 "type": "access",
+                "id_cantina": usuario.id_cantina,
             }
         )
 
