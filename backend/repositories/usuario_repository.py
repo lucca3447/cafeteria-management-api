@@ -5,27 +5,40 @@ from schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
 
 
 class UsuarioRepository:
-    def __init__(self, db: Session, id_cantina: int):
+    def __init__(self, db: Session, id_cantina: int | None = None):
         self.db = db
         self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(Usuario).filter(Usuario.id_cantina == self.id_cantina).all()
+        query = self.db.query(Usuario)
+        if self.id_cantina is not None:
+            query = query.filter(Usuario.id_cantina == self.id_cantina)
+        return query.all()
 
     def buscar_por_id(self, id_usuario: int):
-        return self.db.query(Usuario).filter(Usuario.id_usuario == id_usuario, Usuario.id_cantina == self.id_cantina).first()
+        query = self.db.query(Usuario).filter(Usuario.id_usuario == id_usuario)
+        if self.id_cantina is not None:
+            query = query.filter(Usuario.id_cantina == self.id_cantina)
+        return query.first()
 
     def buscar_por_login(self, login: str):
-        return self.db.query(Usuario).filter(Usuario.login == login, Usuario.id_cantina == self.id_cantina).first()
+        query = self.db.query(Usuario).filter(Usuario.login == login)
+        if self.id_cantina is not None:
+            query = query.filter(Usuario.id_cantina == self.id_cantina)
+        return query.first()
 
-    def criar(self, usuario: UsuarioCreate, senha_hash: str, id_cantina: int):
+    def criar(self, usuario: UsuarioCreate, senha_hash: str, id_cantina: int | None = None):
+        cantina_id = id_cantina or self.id_cantina
+        if cantina_id is None:
+            raise ValueError("id_cantina obrigatorio para criar usuario")
+        
         novo_usuario = Usuario(
             nome=usuario.nome,
             login=usuario.login,
             senha_hash=senha_hash,
             perfil=usuario.perfil,
             ativo=usuario.ativo,
-            id_cantina=id_cantina,
+            id_cantina=cantina_id,
         )
         self.db.add(novo_usuario)
         self.db.commit()
@@ -53,4 +66,7 @@ class UsuarioRepository:
         self.db.commit()
 
     def existe_admin(self) -> bool:
-        return self.db.query(Usuario).filter(Usuario.perfil == "admin", Usuario.id_cantina == self.id_cantina).first() is not None
+        query = self.db.query(Usuario).filter(Usuario.perfil == "admin")
+        if self.id_cantina is not None:
+            query = query.filter(Usuario.id_cantina == self.id_cantina)
+        return query.first() is not None
