@@ -21,7 +21,17 @@ export function LoginPage() {
       const next = location.state?.from?.pathname || '/dashboard'
       navigate(next, { replace: true })
     } catch (requestError) {
-      setError(requestError.response?.data?.detail || 'Falha no login. Verifique suas credenciais.')
+      const detail = requestError.response?.data?.detail
+      if (Array.isArray(detail)) {
+        setError(detail.map(err => {
+          const field = err.loc && err.loc.length > 0 ? err.loc[err.loc.length - 1] : 'Erro';
+          return `${field}: ${err.msg}`;
+        }).join(' | '))
+      } else if (typeof detail === 'string') {
+        setError(detail)
+      } else {
+        setError('Falha no login. Verifique suas credenciais.')
+      }
     } finally {
       setLoading(false)
     }

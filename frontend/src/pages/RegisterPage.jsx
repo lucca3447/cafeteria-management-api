@@ -28,7 +28,17 @@ export function RegisterPage() {
       setSuccess(true)
       setTimeout(() => navigate('/login'), 3000)
     } catch (requestError) {
-      setError(requestError.response?.data?.detail || 'Falha ao registrar cantina.')
+      const detail = requestError.response?.data?.detail
+      if (Array.isArray(detail)) {
+        setError(detail.map(err => {
+          const field = err.loc && err.loc.length > 0 ? err.loc[err.loc.length - 1] : 'Erro';
+          return `${field}: ${err.msg}`;
+        }).join(' | '))
+      } else if (typeof detail === 'string') {
+        setError(detail)
+      } else {
+        setError('Falha ao registrar cantina. Verifique os dados.')
+      }
     } finally {
       setLoading(false)
     }
