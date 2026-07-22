@@ -7,8 +7,8 @@ from schemas.usuario_schema import UsuarioCreate, UsuarioUpdate
 
 
 class UsuarioService:
-    def __init__(self, db: Session):
-        self.repository = UsuarioRepository(db)
+    def __init__(self, db: Session, id_cantina: int):
+        self.repository = UsuarioRepository(db, id_cantina)
 
     def listar(self):
         return self.repository.listar()

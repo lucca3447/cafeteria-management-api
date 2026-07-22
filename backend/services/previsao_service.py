@@ -27,8 +27,9 @@ DIAS_SEMANA = {
 class PrevisaoService:
    
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def _buscar_historico_vendas(self, dias: int = 28):
         """
@@ -46,7 +47,7 @@ class PrevisaoService:
                 Pedido.data_hora,
             )
             .join(Pedido, ItemPedido.id_nota_fiscal == Pedido.id_nota_fiscal)
-            .filter(Pedido.data_hora >= data_inicio)
+            .filter(Pedido.data_hora >= data_inicio, Pedido.id_cantina == self.id_cantina)
             .all()
         )
 
@@ -88,7 +89,7 @@ class PrevisaoService:
         Busca a quantidade em estoque de cada produto.
         Retorna um dicionario: {id_produto: quantidade_estoque}
         """
-        estoques = self.db.query(Estoque.id_produto, Estoque.quantidade_estoque).all()
+        estoques = self.db.query(Estoque.id_produto, Estoque.quantidade_estoque).join(Produto).filter(Produto.id_cantina == self.id_cantina).all()
         return {e.id_produto: e.quantidade_estoque for e in estoques}
 
     def _buscar_nomes_produtos(self):
@@ -96,7 +97,7 @@ class PrevisaoService:
         Busca os nomes de todos os produtos.
         Retorna um dicionario: {id_produto: nome}
         """
-        produtos = self.db.query(Produto.id_produto, Produto.nome).all()
+        produtos = self.db.query(Produto.id_produto, Produto.nome).filter(Produto.id_cantina == self.id_cantina).all()
         return {p.id_produto: p.nome for p in produtos}
 
     def gerar_alertas(self, dias_historico: int = 28):

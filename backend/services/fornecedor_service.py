@@ -6,8 +6,8 @@ from schemas.fornecedor_schema import FornecedorCreate, FornecedorUpdate
 
 
 class FornecedorService:
-    def __init__(self, db: Session):
-        self.repository = FornecedorRepository(db)
+    def __init__(self, db: Session, id_cantina: int):
+        self.repository = FornecedorRepository(db, id_cantina)
 
     def listar(self):
         return self.repository.listar()

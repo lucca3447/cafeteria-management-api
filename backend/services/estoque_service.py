@@ -7,9 +7,9 @@ from schemas.estoque_schema import EstoqueCreate, EstoqueUpdate
 
 
 class EstoqueService:
-    def __init__(self, db: Session):
-        self.repository = EstoqueRepository(db)
-        self.produto_repository = ProdutoRepository(db)
+    def __init__(self, db: Session, id_cantina: int):
+        self.repository = EstoqueRepository(db, id_cantina)
+        self.produto_repository = ProdutoRepository(db, id_cantina)
 
     def listar(self):
         return self.repository.listar()

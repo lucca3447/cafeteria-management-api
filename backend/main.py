@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
 from core.database import Base, engine
 
+from models.cantina_model import Cantina
 from models.categoria_model import Categoria
 from models.estoque_model import Estoque
 from models.fornecedor_model import Fornecedor
@@ -17,6 +18,7 @@ from models.refresh_token_model import RefreshToken
 from models.usuario_model import Usuario
 
 from routers.auth_router import router as auth_router
+from routers.cantina_router import router as cantina_router
 from routers.categoria_router import router as categoria_router
 from routers.estoque_router import router as estoque_router
 from routers.fornecedor_produto_router import router as fornecedor_produto_router
@@ -47,6 +49,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(cantina_router)
 app.include_router(usuario_router)
 app.include_router(categoria_router)
 app.include_router(produto_router)

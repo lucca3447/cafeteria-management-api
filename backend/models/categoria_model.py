@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from core.database import Base
 
@@ -8,4 +8,5 @@ class Categoria(Base):
 
     id_categoria = Column(Integer, primary_key=True, index=True)
     descricao = Column(String(100), nullable=False, unique=True)
+    id_cantina = Column(Integer, ForeignKey("cantinas.id_cantina"), nullable=False)
     produtos = relationship("Produto", back_populates="categoria")

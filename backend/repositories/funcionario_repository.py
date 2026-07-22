@@ -5,15 +5,17 @@ from schemas.funcionario_schema import FuncionarioCreate, FuncionarioUpdate
 
 
 class FuncionarioRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(Funcionario).all()
+        return self.db.query(Funcionario).filter(Funcionario.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_funcionario: int):
         return self.db.query(Funcionario).filter(
-            Funcionario.id_funcionario == id_funcionario
+            Funcionario.id_funcionario == id_funcionario,
+            Funcionario.id_cantina == self.id_cantina
         ).first()
 
     def buscar_por_nome(self, nome: str):
@@ -24,7 +26,8 @@ class FuncionarioRepository:
     def criar(self, funcionario: FuncionarioCreate):
         novo_funcionario = Funcionario(
             nome=funcionario.nome,
-            cargo=funcionario.cargo
+            cargo=funcionario.cargo,
+            id_cantina=self.id_cantina
         )
 
         self.db.add(novo_funcionario)

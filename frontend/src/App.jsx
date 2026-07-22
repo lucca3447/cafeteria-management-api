@@ -9,6 +9,7 @@ import { FornecedorProdutoPage } from './pages/FornecedorProdutoPage.jsx'
 import { FornecedoresPage } from './pages/FornecedoresPage.jsx'
 import { FuncionariosPage } from './pages/FuncionariosPage.jsx'
 import { LoginPage } from './pages/LoginPage.jsx'
+import { RegisterPage } from './pages/RegisterPage.jsx'
 import { NaoAutorizadoPage } from './pages/NaoAutorizadoPage.jsx'
 import { PedidosPage } from './pages/PedidosPage.jsx'
 import { ProdutosPage } from './pages/ProdutosPage.jsx'
@@ -33,6 +34,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginRoute />} />
+      <Route path="/registrar" element={<RegisterPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>

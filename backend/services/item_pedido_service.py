@@ -12,12 +12,12 @@ from schemas.item_pedido_schema import ItemPedidoCreate, ItemPedidoUpdate
 
 
 class ItemPedidoService:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
-        self.repository = ItemPedidoRepository(db)
-        self.produto_repository = ProdutoRepository(db)
-        self.pedido_repository = PedidoRepository(db)
-        self.estoque_repository = EstoqueRepository(db)
+        self.repository = ItemPedidoRepository(db, id_cantina)
+        self.produto_repository = ProdutoRepository(db, id_cantina)
+        self.pedido_repository = PedidoRepository(db, id_cantina)
+        self.estoque_repository = EstoqueRepository(db, id_cantina)
 
     def listar(self):
         return self.repository.listar()

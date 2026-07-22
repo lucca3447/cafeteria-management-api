@@ -5,11 +5,12 @@ from schemas.pedido_schema import PedidoCreate, PedidoUpdate, PedidoStatusUpdate
 
 
 class PedidoRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(Pedido).all()
+        return self.db.query(Pedido).filter(Pedido.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_nota_fiscal: int):
         return self.db.query(Pedido).filter(
@@ -25,7 +26,8 @@ class PedidoRepository:
         novo_pedido = Pedido(
             id_funcionario=pedido.id_funcionario,
             valor_total=pedido.valor_total,
-            status=pedido.status
+            status=pedido.status,
+            id_cantina=self.id_cantina
         )
 
         self.db.add(novo_pedido)

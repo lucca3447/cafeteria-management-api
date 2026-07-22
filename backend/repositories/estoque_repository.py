@@ -1,15 +1,17 @@
 from sqlalchemy.orm import Session
 
 from models.estoque_model import Estoque
+from models.produto_model import Produto
 from schemas.estoque_schema import EstoqueCreate, EstoqueUpdate
 
 
 class EstoqueRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(Estoque).all()
+        return self.db.query(Estoque).join(Estoque.produto).filter(Produto.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_estoque: int):
         return self.db.query(Estoque).filter(
@@ -17,8 +19,9 @@ class EstoqueRepository:
         ).first()
 
     def buscar_por_produto(self, id_produto: int):
-        return self.db.query(Estoque).filter(
-            Estoque.id_produto == id_produto
+        return self.db.query(Estoque).join(Estoque.produto).filter(
+            Estoque.id_produto == id_produto,
+            Produto.id_cantina == self.id_cantina
         ).first()
 
     def criar(self, estoque: EstoqueCreate):

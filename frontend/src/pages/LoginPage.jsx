@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { Coffee, KeyRound, User, Loader2, ArrowRight } from 'lucide-react'
 
@@ -21,7 +21,17 @@ export function LoginPage() {
       const next = location.state?.from?.pathname || '/dashboard'
       navigate(next, { replace: true })
     } catch (requestError) {
-      setError(requestError.response?.data?.detail || 'Falha no login. Verifique suas credenciais.')
+      const detail = requestError.response?.data?.detail
+      if (Array.isArray(detail)) {
+        setError(detail.map(err => {
+          const field = err.loc && err.loc.length > 0 ? err.loc[err.loc.length - 1] : 'Erro';
+          return `${field}: ${err.msg}`;
+        }).join(' | '))
+      } else if (typeof detail === 'string') {
+        setError(detail)
+      } else {
+        setError('Falha no login. Verifique suas credenciais.')
+      }
     } finally {
       setLoading(false)
     }
@@ -144,6 +154,12 @@ export function LoginPage() {
               )}
             </button>
           </form>
+          
+          <div className="mt-8 text-center">
+            <Link to="/registrar" className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">
+              Não tem uma conta? Registre sua cantina
+            </Link>
+          </div>
         </div>
       </div>
     </div>

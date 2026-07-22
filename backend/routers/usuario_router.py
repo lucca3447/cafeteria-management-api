@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from core.auth_dependencies import get_current_user
+from models.usuario_model import Usuario
 
 from core.auth_dependencies import require_roles
 from core.database import get_db
@@ -14,18 +16,20 @@ router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 def criar_usuario(
     usuario: UsuarioCreate,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin")),
 ):
-    service = UsuarioService(db)
+    service = UsuarioService(db, current_user.id_cantina)
     return service.criar(usuario)
 
 
 @router.get("/", response_model=list[UsuarioResponse])
 def listar_usuarios(
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente")),
 ):
-    service = UsuarioService(db)
+    service = UsuarioService(db, current_user.id_cantina)
     return service.listar()
 
 
@@ -33,9 +37,10 @@ def listar_usuarios(
 def buscar_usuario(
     id_usuario: int,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente")),
 ):
-    service = UsuarioService(db)
+    service = UsuarioService(db, current_user.id_cantina)
     return service.buscar_por_id(id_usuario)
 
 
@@ -44,9 +49,10 @@ def atualizar_usuario(
     id_usuario: int,
     usuario: UsuarioUpdate,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin")),
 ):
-    service = UsuarioService(db)
+    service = UsuarioService(db, current_user.id_cantina)
     return service.atualizar(id_usuario, usuario)
 
 
@@ -54,7 +60,8 @@ def atualizar_usuario(
 def deletar_usuario(
     id_usuario: int,
     db: Session = Depends(get_db),
+    current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin")),
 ):
-    service = UsuarioService(db)
+    service = UsuarioService(db, current_user.id_cantina)
     return service.deletar(id_usuario)

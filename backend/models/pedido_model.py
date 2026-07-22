@@ -11,6 +11,7 @@ class Pedido(Base):
     data_hora = Column(DateTime, server_default=func.now(), nullable=False)
     valor_total = Column(Numeric(10,2), nullable=False)
     status = Column(String(20), default="pendente", nullable=False)
+    id_cantina = Column(Integer, ForeignKey("cantinas.id_cantina"), nullable=False)
 
     funcionario = relationship("Funcionario", back_populates="pedidos")
     itens = relationship("ItemPedido", back_populates="pedido", cascade="all, delete-orphan")

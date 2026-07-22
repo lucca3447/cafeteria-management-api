@@ -1,3 +1,5 @@
+from core.auth_dependencies import get_current_user
+from models.usuario_model import Usuario
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -20,29 +22,29 @@ router = APIRouter(
 @router.post("/", response_model=CategoriaResponse, status_code=201)
 def criar_categoria(
     categoria: CategoriaCreate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente"))
 ):
-    service = CategoriaService(db)
+    service = CategoriaService(db, current_user.id_cantina)
     return service.criar(categoria)
 
 
 @router.get("/", response_model=list[CategoriaResponse])
 def listar_categorias(
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente", "funcionario"))
 ):
-    service = CategoriaService(db)
+    service = CategoriaService(db, current_user.id_cantina)
     return service.listar()
 
 
 @router.get("/{id_categoria}", response_model=CategoriaResponse)
 def buscar_categoria(
     id_categoria: int,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente", "funcionario"))
 ):
-    service = CategoriaService(db)
+    service = CategoriaService(db, current_user.id_cantina)
     return service.buscar_por_id(id_categoria)
 
 
@@ -50,18 +52,18 @@ def buscar_categoria(
 def atualizar_categoria(
     id_categoria: int,
     categoria: CategoriaUpdate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente"))
 ):
-    service = CategoriaService(db)
+    service = CategoriaService(db, current_user.id_cantina)
     return service.atualizar(id_categoria, categoria)
 
 
 @router.delete("/{id_categoria}")
 def deletar_categoria(
     id_categoria: int,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente"))
 ):
-    service = CategoriaService(db)
+    service = CategoriaService(db, current_user.id_cantina)
     return service.deletar(id_categoria)

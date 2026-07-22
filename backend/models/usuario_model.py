@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from core.database import Base
@@ -16,5 +16,6 @@ class Usuario(Base):
     perfil = Column(String(30), nullable=False, default="funcionario")
     ativo = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    id_cantina = Column(Integer, ForeignKey("cantinas.id_cantina"), nullable=False)
 
     refresh_tokens = relationship("RefreshToken", back_populates="usuario", cascade="all, delete-orphan")

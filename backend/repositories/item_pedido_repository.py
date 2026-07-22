@@ -1,15 +1,17 @@
 from sqlalchemy.orm import Session
 
 from models.item_pedido_model import ItemPedido
+from models.pedido_model import Pedido
 from schemas.item_pedido_schema import ItemPedidoCreate, ItemPedidoUpdate
 
 
 class ItemPedidoRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(ItemPedido).all()
+        return self.db.query(ItemPedido).join(ItemPedido.pedido).filter(Pedido.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_item_pedido: int):
         return self.db.query(ItemPedido).filter(

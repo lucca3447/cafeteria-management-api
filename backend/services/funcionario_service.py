@@ -6,8 +6,8 @@ from schemas.funcionario_schema import FuncionarioCreate, FuncionarioUpdate
 
 
 class FuncionarioService:
-    def __init__(self, db: Session):
-        self.repository = FuncionarioRepository(db)
+    def __init__(self, db: Session, id_cantina: int):
+        self.repository = FuncionarioRepository(db, id_cantina)
 
     def listar(self):
         return self.repository.listar()

@@ -1,3 +1,5 @@
+from core.auth_dependencies import get_current_user
+from models.usuario_model import Usuario
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -20,29 +22,29 @@ router = APIRouter(
 @router.post("/", response_model=FornecedorResponse, status_code=201)
 def criar_fornecedor(
     fornecedor: FornecedorCreate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente"))
 ):
-    service = FornecedorService(db)
+    service = FornecedorService(db, current_user.id_cantina)
     return service.criar(fornecedor)
 
 
 @router.get("/", response_model=list[FornecedorResponse])
 def listar_fornecedores(
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente"))
 ):
-    service = FornecedorService(db)
+    service = FornecedorService(db, current_user.id_cantina)
     return service.listar()
 
 
 @router.get("/{id_fornecedor}", response_model=FornecedorResponse)
 def buscar_fornecedor(
     id_fornecedor: int,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente"))
 ):
-    service = FornecedorService(db)
+    service = FornecedorService(db, current_user.id_cantina)
     return service.buscar_por_id(id_fornecedor)
 
 
@@ -50,18 +52,18 @@ def buscar_fornecedor(
 def atualizar_fornecedor(
     id_fornecedor: int,
     fornecedor: FornecedorUpdate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente"))
 ):
-    service = FornecedorService(db)
+    service = FornecedorService(db, current_user.id_cantina)
     return service.atualizar(id_fornecedor, fornecedor)
 
 
 @router.delete("/{id_fornecedor}")
 def deletar_fornecedor(
     id_fornecedor: int,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
     _: object = Depends(require_roles("admin", "gerente"))
 ):
-    service = FornecedorService(db)
+    service = FornecedorService(db, current_user.id_cantina)
     return service.deletar(id_fornecedor)

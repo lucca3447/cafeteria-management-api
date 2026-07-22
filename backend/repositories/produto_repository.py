@@ -4,20 +4,23 @@ from schemas.produto_schema import ProdutoCreate, ProdutoUpdate
 
 
 class ProdutoRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, id_cantina: int):
         self.db = db
+        self.id_cantina = id_cantina
 
     def listar(self):
-        return self.db.query(Produto).all()
+        return self.db.query(Produto).filter(Produto.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_produto: int):
         return self.db.query(Produto).filter(
-            Produto.id_produto == id_produto
+            Produto.id_produto == id_produto,
+            Produto.id_cantina == self.id_cantina
         ).first()
 
     def buscar_por_nome(self, nome: str):
         return self.db.query(Produto).filter(
-            Produto.nome == nome
+            Produto.nome == nome,
+            Produto.id_cantina == self.id_cantina
         ).first()
 
     def criar(self, produto: ProdutoCreate):
@@ -25,7 +28,8 @@ class ProdutoRepository:
             nome=produto.nome,
             preco=produto.preco,
             id_categoria=produto.id_categoria,
-            exige_preparo=produto.exige_preparo
+            exige_preparo=produto.exige_preparo,
+            id_cantina=self.id_cantina
         )
 
         self.db.add(novo_produto)
