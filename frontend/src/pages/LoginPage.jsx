@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { Coffee, KeyRound, User, Loader2, ArrowRight } from 'lucide-react'
 
@@ -144,6 +144,12 @@ export function LoginPage() {
               )}
             </button>
           </form>
+          
+          <div className="mt-8 text-center">
+            <Link to="/registrar" className="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">
+              Não tem uma conta? Registre sua cantina
+            </Link>
+          </div>
         </div>
       </div>
     </div>

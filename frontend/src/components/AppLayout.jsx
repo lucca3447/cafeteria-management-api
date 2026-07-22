@@ -54,23 +54,29 @@ export function AppLayout() {
 
         <div className="flex-1 overflow-y-auto px-4 py-6">
           <div className="space-y-1">
-            <p className="px-3 text-xs font-semibold uppercase tracking-wider text-brand-400/70 mb-2">Menu Principal</p>
-            <NavLink to="/dashboard" className={navClassName}>
-              {({ isActive }) => <><LayoutDashboard className={iconClassName({ isActive })} /> Dashboard</>}
+            <p className="px-3 text-xs font-semibold uppercase tracking-wider text-brand-400/70 mb-2">Operacional</p>
+            <NavLink to="/pedidos" className={navClassName}>
+              {({ isActive }) => <><ShoppingCart className={iconClassName({ isActive })} /> Pedidos (PDV)</>}
             </NavLink>
             <NavLink to="/cozinha" className={navClassName}>
               {({ isActive }) => <><Coffee className={iconClassName({ isActive })} /> Cozinha</>}
             </NavLink>
-            <NavLink to="/categorias" className={navClassName}>
-              {({ isActive }) => <><Tags className={iconClassName({ isActive })} /> Categorias</>}
-            </NavLink>
-            <NavLink to="/produtos" className={navClassName}>
-              {({ isActive }) => <><Package className={iconClassName({ isActive })} /> Produtos</>}
-            </NavLink>
-            <NavLink to="/pedidos" className={navClassName}>
-              {({ isActive }) => <><ShoppingCart className={iconClassName({ isActive })} /> Pedidos</>}
-            </NavLink>
           </div>
+
+          {canManage && (
+            <div className="mt-8 space-y-1">
+              <p className="px-3 text-xs font-semibold uppercase tracking-wider text-brand-400/70 mb-2">Visão Geral</p>
+              <NavLink to="/dashboard" className={navClassName}>
+                {({ isActive }) => <><LayoutDashboard className={iconClassName({ isActive })} /> Dashboard</>}
+              </NavLink>
+              <NavLink to="/categorias" className={navClassName}>
+                {({ isActive }) => <><Tags className={iconClassName({ isActive })} /> Categorias</>}
+              </NavLink>
+              <NavLink to="/produtos" className={navClassName}>
+                {({ isActive }) => <><Package className={iconClassName({ isActive })} /> Produtos</>}
+              </NavLink>
+            </div>
+          )}
 
           {canManage && (
             <div className="mt-8 space-y-1">
