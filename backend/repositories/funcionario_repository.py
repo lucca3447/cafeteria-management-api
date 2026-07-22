@@ -26,7 +26,8 @@ class FuncionarioRepository:
     def criar(self, funcionario: FuncionarioCreate):
         novo_funcionario = Funcionario(
             nome=funcionario.nome,
-            cargo=funcionario.cargo
+            cargo=funcionario.cargo,
+            id_cantina=self.id_cantina
         )
 
         self.db.add(novo_funcionario)

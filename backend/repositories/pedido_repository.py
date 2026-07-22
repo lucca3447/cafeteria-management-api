@@ -26,7 +26,8 @@ class PedidoRepository:
         novo_pedido = Pedido(
             id_funcionario=pedido.id_funcionario,
             valor_total=pedido.valor_total,
-            status=pedido.status
+            status=pedido.status,
+            id_cantina=self.id_cantina
         )
 
         self.db.add(novo_pedido)
