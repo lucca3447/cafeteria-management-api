@@ -76,15 +76,19 @@ Base.metadata.create_all(bind=engine)
 A API usa JWT com `access_token` e `refresh_token`.
 
 Fluxo recomendado:
-1. `POST /auth/bootstrap-admin` (uso único; bloqueia após existir admin)
-2. `POST /auth/login` (JSON com `login` e `senha`)
-3. `GET /auth/me`
-4. `POST /auth/refresh`
-5. `POST /auth/logout`
+1. **Criação da Cantina (Primeiro Acesso)**
+Para iniciar o sistema (como num SaaS), registre a primeira cantina.
+`POST /cantinas/registrar`
+Esse endpoint cria a cantina e o primeiro usuário com perfil de administrador.
+
+2. **Login**
+`POST /auth/login` (retorna o `access_token` e `refresh_token` contendo o id_cantina).
+
+3. **Gerenciamento**
+Com o Token JWT do admin, é possível criar os demais usuários usando `POST /usuarios/`.
 
 Para o botão `Authorize` do Swagger:
 1. Use o endpoint OAuth2 `POST /auth/token`
-2. Preencha `username` e `password` no popup
 
 Perfis (RBAC):
 - `admin`: acesso total

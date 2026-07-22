@@ -66,3 +66,4 @@ _Para mais detalhes sobre as bibliotecas utilizadas ou funcionalidades visuais, 
 - **Controle de Catálogo e Estoque**: Gestão contínua de quantidade de itens.
 - **Previsão de Demanda (IA)**: Utiliza `pandas` para analisar o histórico de vendas, calcular médias móveis por dia da semana e cruzar com o estoque atual, exibindo alertas na Dashboard para produtos com risco de falta ou estoque zerado.
 - **Controle de Acesso (RBAC)**: Perfis dinâmicos (`admin`, `gerente`, `funcionario`) protegidos por autenticação JWT para restrição inteligente de acessos na API e nas Telas.
+- **SaaS Multi-Tenant**: Registro isolado de múltiplas cantinas (`POST /cantinas/registrar`), onde os dados de cada cantina são isolados no banco e a autenticação restringe o acesso por tenant.
