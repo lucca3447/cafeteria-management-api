@@ -11,6 +11,12 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
     ENVIRONMENT: str = "development"
 
+    @field_validator("DATABASE_URL")
+    def validate_database_url(cls, v: str) -> str:
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql://", 1)
+        return v
+
     @field_validator("SECRET_KEY")
     def validate_secret_key(cls, v: str) -> str:
         if len(v) < 32:
