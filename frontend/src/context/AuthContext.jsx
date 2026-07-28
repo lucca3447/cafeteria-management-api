@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from 'react'
-import { api, clearStoredTokens, getStoredTokens, storeTokens } from '../services/api'
+import { api } from '../services/api'
 
 const AuthContext = createContext(null)
 
@@ -22,20 +22,14 @@ export function AuthProvider({ children }) {
   }
 
   async function login(loginValue, senha) {
-    const response = await api.post('/auth/login', { login: loginValue, senha })
-    storeTokens(response.data)
+    await api.post('/auth/login', { login: loginValue, senha })
     return fetchMe()
   }
 
   async function logout() {
-    const { refreshToken } = getStoredTokens()
-
     try {
-      if (refreshToken) {
-        await api.post('/auth/logout', { refresh_token: refreshToken })
-      }
+      await api.post('/auth/logout')
     } finally {
-      clearStoredTokens()
       setUser(null)
     }
   }
@@ -53,18 +47,9 @@ export function AuthProvider({ children }) {
     let active = true
 
     async function bootstrap() {
-      const { accessToken } = getStoredTokens()
-      if (!accessToken) {
-        if (active) {
-          setLoading(false)
-        }
-        return
-      }
-
       try {
         await fetchMe()
       } catch {
-        clearStoredTokens()
         if (active) {
           setUser(null)
         }
@@ -78,7 +63,6 @@ export function AuthProvider({ children }) {
     bootstrap()
 
     const handleSessionExpired = () => {
-      clearStoredTokens()
       setUser(null)
     }
 
@@ -90,7 +74,7 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
-  const isAuthenticated = Boolean(getStoredTokens().accessToken)
+  const isAuthenticated = Boolean(user)
 
   const value = {
     user,

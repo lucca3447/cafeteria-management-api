@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -6,13 +6,28 @@ from core.database import get_db
 from core.security import decodificar_token
 from repositories.usuario_repository import UsuarioRepository
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+# Mantemos o OAuth2 scheme como opcional para não quebrar o Swagger UI
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token", auto_error=False)
 
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    request: Request,
+    token_header: str | None = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ):
+    # 1. Prioridade: cookie HttpOnly
+    token = request.cookies.get("access_token")
+
+    # 2. Fallback: header Authorization (Swagger / Postman)
+    if not token:
+        token = token_header
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token nao fornecido",
+        )
+
     payload = decodificar_token(token)
     if not payload or payload.get("type") != "access":
         raise HTTPException(

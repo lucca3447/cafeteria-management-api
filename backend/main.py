@@ -1,9 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 
 from core.config import settings
 from core.database import Base, engine
+from core.rate_limit import limiter
 
 from models.cantina_model import Cantina
 from models.categoria_model import Categoria
@@ -33,6 +37,10 @@ from routers.previsao_router import router as previsao_router
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="API para cantina", description="API para controle de cantina ", version="1.0")
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 allowed_origins = [
     origin.strip()
