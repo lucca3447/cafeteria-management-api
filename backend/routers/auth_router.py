@@ -14,9 +14,7 @@ from schemas.auth_schema import (
     TokenResponse,
 )
 from schemas.usuario_schema import UsuarioResponse
-from services.auth_service import AuthService
-
-REFRESH_TOKEN_EXPIRE_DAYS = 7
+from services.auth_service import AuthService, REFRESH_TOKEN_EXPIRE_DAYS
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -58,7 +56,7 @@ def login(request: Request, response: Response, payload: LoginRequest, db: Sessi
     return tokens
 
 
-@router.post("/token")
+@router.post("/token", response_model=TokenResponse)
 @limiter.limit("5/minute")
 def login_for_access_token(
     request: Request,

@@ -1,7 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, Field, field_validator
 import bleach
-import re
 from schemas.usuario_schema import UsuarioCreate, UsuarioResponse
 
 class CantinaCreate(BaseModel):
