@@ -26,7 +26,7 @@ def _set_auth_cookies(response: Response, tokens: dict):
         value=tokens["access_token"],
         httponly=True,
         secure=settings.ENVIRONMENT == "production",
-        samesite="lax",
+        samesite="none",
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         path="/",
     )
@@ -35,7 +35,7 @@ def _set_auth_cookies(response: Response, tokens: dict):
         value=tokens["refresh_token"],
         httponly=True,
         secure=settings.ENVIRONMENT == "production",
-        samesite="lax",
+        samesite="none",
         max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
         path="/auth",
     )
