@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
+    ENVIRONMENT: str = "development"
 
     @field_validator("SECRET_KEY")
     def validate_secret_key(cls, v: str) -> str:

@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from core.auth_dependencies import get_current_user
+from core.config import settings
 from core.database import get_db
 from core.rate_limit import limiter
 from core.security import ACCESS_TOKEN_EXPIRE_MINUTES
@@ -26,7 +27,7 @@ def _set_auth_cookies(response: Response, tokens: dict):
         key="access_token",
         value=tokens["access_token"],
         httponly=True,
-        secure=True,
+        secure=settings.ENVIRONMENT == "production",
         samesite="lax",
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         path="/",
@@ -35,7 +36,7 @@ def _set_auth_cookies(response: Response, tokens: dict):
         key="refresh_token",
         value=tokens["refresh_token"],
         httponly=True,
-        secure=True,
+        secure=settings.ENVIRONMENT == "production",
         samesite="lax",
         max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
         path="/auth",
