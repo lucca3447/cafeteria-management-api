@@ -75,3 +75,8 @@ def home():
     return {
         "mensagem": "API da cantina funcionandokkkk"
     }
+
+@app.get("/ping")
+def ping():
+    """Rota usada por serviços como o cron-job.org para manter o servidor acordado."""
+    return {"ping": "pong"}
