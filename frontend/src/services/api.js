@@ -24,6 +24,11 @@ api.interceptors.response.use(
     const path = originalRequest?.url || ''
 
     if (!originalRequest || status !== 401 || originalRequest._retry) {
+      if (status === 422 && Array.isArray(error.response?.data?.detail)) {
+        error.response.data.detail = error.response.data.detail
+          .map(err => `${err.loc.join('.')}: ${err.msg}`)
+          .join(' | ');
+      }
       return Promise.reject(error)
     }
 
