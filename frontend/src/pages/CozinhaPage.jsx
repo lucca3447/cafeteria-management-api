@@ -139,8 +139,9 @@ export function CozinhaPage() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {pedidosComPreparo.map((pedido) => {
-            const dataPedido = new Date(pedido.data_hora)
-            const tempoEspera = Math.floor((new Date() - dataPedido) / 60000) // em minutos
+            const raw = pedido.data_hora.endsWith('Z') ? pedido.data_hora : pedido.data_hora + 'Z'
+            const dataPedido = new Date(raw)
+            const tempoEspera = Math.max(0, Math.floor((new Date() - dataPedido) / 60000))
             const isUrgente = tempoEspera > 15
 
             return (
