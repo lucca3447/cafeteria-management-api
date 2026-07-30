@@ -7,8 +7,13 @@ export function CategoriasPage() {
   const { hasAnyRole } = useAuth()
   const canEdit = hasAnyRole(['admin', 'gerente'])
   const [categorias, setCategorias] = useState([])
+  const [busca, setBusca] = useState('')
   const [descricao, setDescricao] = useState('')
   const [editId, setEditId] = useState(null)
+  
+  const categoriasFiltradas = categorias.filter(item => 
+    item.descricao.toLowerCase().includes(busca.toLowerCase())
+  )
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -146,7 +151,21 @@ export function CategoriasPage() {
         </div>
       )}
 
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col">
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col">
+        {/* Barra de Pesquisa */}
+        <div className="p-4 border-b border-slate-200 bg-slate-50/50">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <input
+              type="text"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Pesquisar categoria por descrição..."
+              className="w-full rounded-lg border border-slate-300 bg-white pl-9 pr-4 py-2 text-sm outline-none ring-slate-900 focus:ring-2 transition-shadow"
+            />
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm whitespace-nowrap">
             <thead>
@@ -166,7 +185,7 @@ export function CategoriasPage() {
                     </div>
                   </td>
                 </tr>
-              ) : categorias.length === 0 ? (
+              ) : categoriasFiltradas.length === 0 ? (
                 <tr>
                   <td colSpan={canEdit ? 3 : 2} className="px-6 py-12 text-center text-slate-500">
                     <div className="flex flex-col items-center justify-center gap-2">
@@ -176,7 +195,7 @@ export function CategoriasPage() {
                   </td>
                 </tr>
               ) : (
-                categorias.map((item) => (
+                categoriasFiltradas.map((item) => (
                   <tr key={item.id_categoria} className="group transition-colors hover:bg-slate-50/80">
                     <td className="px-6 py-4 font-medium text-slate-500">#{item.id_categoria}</td>
                     <td className="px-6 py-4 font-medium text-slate-900">{item.descricao}</td>
