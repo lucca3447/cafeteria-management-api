@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { api } from '../services/api'
 
 const BRL = new Intl.NumberFormat('pt-BR', {
@@ -480,8 +480,8 @@ export function PedidosPage() {
                 const itens = itensPorPedido[pedido.id_nota_fiscal] || []
 
                 return (
-                  <>
-                    <tr key={`pedido-${pedido.id_nota_fiscal}`} className="border-t border-slate-200">
+                  <Fragment key={pedido.id_nota_fiscal}>
+                    <tr className="border-t border-slate-200">
                       <td className="px-3 py-2">{pedido.id_nota_fiscal}</td>
                       <td className="px-3 py-2">
                         {funcionariosMap.get(pedido.id_funcionario) || `ID ${pedido.id_funcionario}`}
@@ -553,7 +553,7 @@ export function PedidosPage() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 )
               })
             )}
