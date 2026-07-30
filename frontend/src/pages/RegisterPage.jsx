@@ -74,7 +74,7 @@ export function RegisterPage() {
 
         <div className="relative z-10 max-w-md">
           <h1 className="text-4xl font-bold leading-tight mb-6 font-serif">
-            Junte-se à revolução na gestão.
+            Junte-se 
           </h1>
           <p className="text-brand-100 text-lg leading-relaxed">
             Cadastre sua cantina hoje e experimente o poder de um ecossistema completo para suas vendas.
@@ -82,7 +82,7 @@ export function RegisterPage() {
         </div>
 
         <div className="relative z-10 text-sm text-brand-200">
-          &copy; {new Date().getFullYear()} FastCantina. Todos os direitos reservados.
+          &copy; {new Date().getFullYear()} FastCantina.
         </div>
       </div>
 
