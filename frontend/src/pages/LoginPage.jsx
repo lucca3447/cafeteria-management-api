@@ -62,7 +62,8 @@ export function LoginPage() {
         </div>
 
         <div className="relative z-10 text-sm text-brand-200">
-          &copy; {new Date().getFullYear()} FastCantina. Todos os direitos reservados.
+          <p> Aviso: Este sistema foi desenvolvido para fins de demonstração e portfólio. Os dados apresentados são fictícios e não representam informações reais.
+           Por se tratar de um ambiente de demonstração, os dados cadastrados podem ser alterados, removidos ou perdidos a qualquer momento, sem aviso prévio.</p>
         </div>
       </div>
 
