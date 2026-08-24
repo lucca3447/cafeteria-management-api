@@ -14,8 +14,9 @@ class EstoqueRepository:
         return self.db.query(Estoque).join(Estoque.produto).filter(Produto.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_estoque: int):
-        return self.db.query(Estoque).filter(
-            Estoque.id_estoque == id_estoque
+        return self.db.query(Estoque).join(Estoque.produto).filter(
+            Estoque.id_estoque == id_estoque,
+            Produto.id_cantina == self.id_cantina
         ).first()
 
     def buscar_por_produto(self, id_produto: int):

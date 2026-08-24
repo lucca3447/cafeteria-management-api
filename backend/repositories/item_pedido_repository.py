@@ -14,8 +14,9 @@ class ItemPedidoRepository:
         return self.db.query(ItemPedido).join(ItemPedido.pedido).filter(Pedido.id_cantina == self.id_cantina).all()
 
     def buscar_por_id(self, id_item_pedido: int):
-        return self.db.query(ItemPedido).filter(
-            ItemPedido.id_item_pedido == id_item_pedido
+        return self.db.query(ItemPedido).join(ItemPedido.pedido).filter(
+            ItemPedido.id_item_pedido == id_item_pedido,
+            Pedido.id_cantina == self.id_cantina
         ).first()
 
     def buscar_por_pedido(self, id_nota_fiscal: int):
