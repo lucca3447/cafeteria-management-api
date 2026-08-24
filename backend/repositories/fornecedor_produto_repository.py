@@ -14,9 +14,10 @@ class FornecedorProdutoRepository:
         return self.db.query(FornecedorProduto).join(FornecedorProduto.fornecedor).filter(Fornecedor.id_cantina == self.id_cantina).all()
 
     def buscar_por_ids(self, id_fornecedor: int, id_produto: int):
-        return self.db.query(FornecedorProduto).filter(
+        return self.db.query(FornecedorProduto).join(FornecedorProduto.fornecedor).filter(
             FornecedorProduto.id_fornecedor == id_fornecedor,
-            FornecedorProduto.id_produto == id_produto
+            FornecedorProduto.id_produto == id_produto,
+            Fornecedor.id_cantina == self.id_cantina
         ).first()
 
     def buscar_por_fornecedor(self, id_fornecedor: int):
