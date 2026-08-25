@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
 import { api } from '../services/api'
+import { BRL } from '../utils/currency'
 import { DollarSign, Package, TrendingUp, Activity, Loader2, AlertTriangle, BrainCircuit } from 'lucide-react'
 import {
   BarChart,
@@ -11,11 +12,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-
-const BRL = new Intl.NumberFormat('pt-BR', {
-  style: 'currency',
-  currency: 'BRL',
-})
 
 // Retorna a data local no formato YYYY-MM-DD (sem conversão UTC)
 function toLocalDateStr(date) {
