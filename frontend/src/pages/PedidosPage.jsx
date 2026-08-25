@@ -171,54 +171,19 @@ export function PedidosPage() {
       return
     }
 
-    let pedidoCriado = null
-
     try {
-      const payloadPedido = {
+      await api.post('/pedidos/completo', {
         id_funcionario: Number(idFuncionario),
-        valor_total: totalPedido,
-      }
-
-      const pedidoResponse = await api.post('/pedidos/', payloadPedido)
-      pedidoCriado = pedidoResponse.data
-
-      const idNotaFiscal = pedidoCriado.id_nota_fiscal
-
-      for (const item of itensRascunho) {
-        await api.post('/itens-pedido/', {
-          quantidade: Number(item.quantidade),
-          subtotal: Number(item.subtotal),
-          id_produto: Number(item.id_produto),
-          id_nota_fiscal: Number(idNotaFiscal),
-        })
-      }
-
-      // Se nenhum item exige preparo, já marcamos o pedido como pronto/concluído
-      const precisaPreparo = itensRascunho.some(item => {
-        const produto = produtosMap.get(item.id_produto)
-        return produto?.exige_preparo === true
+        itens: itensRascunho.map((item) => ({
+          id_produto: item.id_produto,
+          quantidade: item.quantidade,
+        })),
       })
-
-      if (!precisaPreparo) {
-        try {
-          await api.patch(`/pedidos/${idNotaFiscal}/status`, { status: 'pronto' })
-        } catch (e) {
-          // Ignorar falha no patch de status
-        }
-      }
 
       limparFormularioPedido()
       await loadData()
     } catch (requestError) {
-      if (pedidoCriado?.id_nota_fiscal) {
-        try {
-          await api.delete(`/pedidos/${pedidoCriado.id_nota_fiscal}`)
-        } catch {
-          // Ignora erro de rollback e mantém o erro original para o usuário.
-        }
-      }
-
-      setError(requestError.response?.data?.detail || 'Erro ao criar pedido completo.')
+      setError(requestError.response?.data?.detail || 'Erro ao criar pedido.')
     } finally {
       setSaving(false)
     }
