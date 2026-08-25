@@ -25,3 +25,13 @@ class PedidoResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ItemPedidoCompletoCreate(BaseModel):
+    id_produto: int
+    quantidade: int = Field(..., gt=0)
+
+
+class PedidoCompletoCreate(BaseModel):
+    id_funcionario: int
+    itens: list[ItemPedidoCompletoCreate] = Field(..., min_length=1)
