@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { api } from '../services/api'
+import { parseDateUTC } from '../utils/date'
 import { ChefHat, CheckCircle2, Clock, Loader2, RefreshCw } from 'lucide-react'
 
 const INTERVALO_ATUALIZACAO = 10000 // 10 segundos
@@ -139,8 +140,7 @@ export function CozinhaPage() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {pedidosComPreparo.map((pedido) => {
-            const raw = pedido.data_hora.endsWith('Z') ? pedido.data_hora : pedido.data_hora + 'Z'
-            const dataPedido = new Date(raw)
+            const dataPedido = parseDateUTC(pedido.data_hora)
             const tempoEspera = Math.max(0, Math.floor((new Date() - dataPedido) / 60000))
             const isUrgente = tempoEspera > 15
 

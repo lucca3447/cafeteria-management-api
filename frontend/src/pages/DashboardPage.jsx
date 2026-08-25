@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
 import { api } from '../services/api'
 import { BRL } from '../utils/currency'
+import { parseDateUTC } from '../utils/date'
 import { DollarSign, Package, TrendingUp, Activity, Loader2, AlertTriangle, BrainCircuit } from 'lucide-react'
 import {
   BarChart,
@@ -86,7 +87,7 @@ export function DashboardPage() {
     const chartMap = new Map(last7Days.map((d) => [d.dateStr, d]))
 
     pedidos.forEach((pedido) => {
-      const pedidoData = new Date(pedido.data_hora)
+      const pedidoData = parseDateUTC(pedido.data_hora)
       const dateStr = toLocalDateStr(pedidoData) // usa data LOCAL do pedido
       const valor = Number(pedido.valor_total)
 
@@ -300,7 +301,7 @@ export function DashboardPage() {
                   <div>
                     <p className="text-sm font-semibold text-slate-900">Pedido #{pedido.id_nota_fiscal}</p>
                     <p className="text-xs text-slate-500">
-                      {new Date(pedido.data_hora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                      {parseDateUTC(pedido.data_hora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
                   <div className="text-right">

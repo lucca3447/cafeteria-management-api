@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 import { api } from '../../services/api'
 import { BRL } from '../../utils/currency'
+import { parseDateUTC } from '../../utils/date'
 
 export function PedidosList({ pedidos, loading, funcionariosMap, produtosMap, onLoadData, onError }) {
   const [buscaPedido, setBuscaPedido] = useState('')
@@ -126,7 +127,7 @@ export function PedidosList({ pedidos, loading, funcionariosMap, produtosMap, on
                         {funcionariosMap.get(pedido.id_funcionario) || `ID ${pedido.id_funcionario}`}
                       </td>
                       <td className="px-3 py-2">{BRL.format(Number(pedido.valor_total))}</td>
-                      <td className="px-3 py-2">{new Date(pedido.data_hora).toLocaleString('pt-BR')}</td>
+                      <td className="px-3 py-2">{parseDateUTC(pedido.data_hora).toLocaleString('pt-BR')}</td>
                       <td className="px-3 py-2">
                         <div className="flex gap-2">
                           <button
