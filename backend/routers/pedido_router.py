@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from core.auth_dependencies import require_roles
 from core.database import get_db
-from schemas.pedido_schema import PedidoCreate, PedidoResponse, PedidoUpdate, PedidoStatusUpdate
+from schemas.pedido_schema import PedidoCreate, PedidoResponse, PedidoUpdate, PedidoStatusUpdate, PedidoCompletoCreate
 from services.pedido_service import PedidoService
 
 
@@ -23,6 +23,16 @@ def criar_pedido(
 ):
     service = PedidoService(db, current_user.id_cantina)
     return service.criar(pedido)
+
+
+@router.post("/completo", response_model=PedidoResponse, status_code=201)
+def criar_pedido_completo(
+    payload: PedidoCompletoCreate,
+    db: Session = Depends(get_db), current_user: Usuario = Depends(get_current_user),
+    _: object = Depends(require_roles("admin", "gerente", "funcionario"))
+):
+    service = PedidoService(db, current_user.id_cantina)
+    return service.criar_completo(payload)
 
 
 @router.get("/", response_model=list[PedidoResponse])
