@@ -1,11 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
 import { api } from '../services/api'
-
-const BRL = new Intl.NumberFormat('pt-BR', {
-  style: 'currency',
-  currency: 'BRL',
-})
+import { BRL } from '../utils/currency'
 
 export function ProdutosPage() {
   const { hasAnyRole } = useAuth()
